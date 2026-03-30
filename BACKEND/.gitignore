@@ -1,0 +1,4 @@
+node_modules/
+.env
+initAdmin.js
+*.log
