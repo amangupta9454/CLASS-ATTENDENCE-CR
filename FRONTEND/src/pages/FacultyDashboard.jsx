@@ -167,31 +167,43 @@ const FacultyDashboard = () => {
         )}
 
         {/* Frequent Absentees Heatmap */}
-        {!loadingHeatmap && frequentAbsentees.length > 0 && (
+        {!loadingHeatmap && (
           <motion.section initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
-            <h2 className="text-sm font-600 text-red-600 mb-3 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4" /> Frequent Absentees Warning (≥3 Days)
+            <h2 className={`text-sm font-600 mb-3 flex items-center gap-2 ${frequentAbsentees.length > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              {frequentAbsentees.length > 0 ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+              Frequent Absentees Warning (≥3 Days)
             </h2>
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {frequentAbsentees.map((student, i) => (
-                  <div key={i} className="bg-white border border-red-100 rounded-xl p-4 flex gap-4 items-center shadow-sm relative overflow-hidden transition-all hover:shadow-md hover:border-red-300">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500" />
-                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 title-font">
-                      <span className="text-red-700 font-bold tracking-tighter text-lg">{student.distinctAbsentDates}</span>
-                      <span className="text-[10px] font-semibold text-red-500 ml-0.5">d</span>
+            
+            {frequentAbsentees.length > 0 ? (
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {frequentAbsentees.map((student, i) => (
+                    <div key={i} className="bg-white border border-red-100 rounded-xl p-4 flex gap-4 items-center shadow-sm relative overflow-hidden transition-all hover:shadow-md hover:border-red-300">
+                      <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500" />
+                      <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 title-font">
+                        <span className="text-red-700 font-bold tracking-tighter text-lg">{student.distinctAbsentDates}</span>
+                        <span className="text-[10px] font-semibold text-red-500 ml-0.5">d</span>
+                      </div>
+                      <div>
+                        <h3 className="text-slate-800 font-bold text-sm tracking-tight truncate w-full">{student.name}</h3>
+                        <p className="text-xs text-slate-500 font-medium mt-0.5">{student.rollNumber} • {student.section}</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-red-500 mt-2 bg-red-50 inline-block px-1.5 py-0.5 rounded border border-red-100">
+                          Missed {student.totalAbsentLectures} Lectures Total
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-slate-800 font-bold text-sm tracking-tight truncate w-full">{student.name}</h3>
-                      <p className="text-xs text-slate-500 font-medium mt-0.5">{student.rollNumber} • {student.section}</p>
-                      <p className="text-[10px] uppercase font-bold tracking-wider text-red-500 mt-2 bg-red-50 inline-block px-1.5 py-0.5 rounded border border-red-100">
-                        Missed {student.totalAbsentLectures} Lectures Total
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-3">
+                  <Check className="w-6 h-6 text-emerald-600" />
+                </div>
+                <h3 className="text-emerald-800 font-bold text-sm">All Good!</h3>
+                <p className="text-emerald-600 text-xs mt-1">No students have missed 3 or more days of classes.</p>
+              </div>
+            )}
           </motion.section>
         )}
 
