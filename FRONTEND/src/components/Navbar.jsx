@@ -19,7 +19,9 @@ const Navbar = () => {
   const navLinks = [
     { label: 'Home', to: '/' },
     ...(isAuthenticated
-      ? []
+      ? [
+          { label: 'Dashboard', to: user?.role === 'CR' ? '/cr-dashboard' : '/faculty-dashboard' }
+        ]
       : [
           { label: 'CR Login', to: '/cr-login' },
           { label: 'Faculty Login', to: '/faculty-login' },

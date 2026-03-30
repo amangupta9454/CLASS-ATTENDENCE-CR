@@ -3,7 +3,7 @@
   <!-- HEADER SECTION -->
   <div style="text-align: center; padding: 40px 0;">
     <h1 style="color: #0f172a; margin-bottom: 8px; font-size: 2.5em; letter-spacing: -0.02em;">CR-ATTENDANCE SYSTEM</h1>
-    <p style="font-size: 1.2em; color: #64748b; font-weight: 500;">A modern, highly efficient, and role-based Attendance Management Solution.</p>
+    <p style="font-size: 1.2em; color: #64748b; font-weight: 500;">A modern, highly efficient, and role-based Attendance Management Solution. </p>
     <p style="margin-top: 20px;">
       <a href="#" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">View Live Demo</a>
     </p>
@@ -145,22 +145,41 @@
   <pre style="background-color: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: monospace;">
 CR-ATTENDANCE/
 ├── BACKEND/
-│   ├── config/          # DB Connection
-│   ├── controllers/     # API logic (auth, attendance, students)
-│   ├── middleware/      # JWT Protect & Role Auth
-│   ├── models/          # Mongoose Schemas
-│   ├── routes/          # API Routers
-│   ├── utils/           # Excel & Email Handlers
-│   └── index.js         # Entry point
+│   ├── config/          # DB Connection setup
+│   ├── controllers/     # Core Business Logic 
+│   │   ├── attendanceController.js
+│   │   ├── authController.js
+│   │   └── studentController.js
+│   ├── middleware/      # Authentication & Role guards (authMiddleware.js)
+│   ├── models/          # MongoDB Mongoose Schemas (User, Student, Attendance)
+│   ├── routes/          # Express API Routers
+│   │   ├── attendanceRoutes.js
+│   │   ├── authRoutes.js
+│   │   └── studentRoutes.js
+│   ├── utils/           # Utilities
+│   │   ├── emailService.js  # Dedicated Nodemailer engine
+│   │   └── excelParser.js   # XLSX parser functions
+│   ├── .env             # Backend Env Variables
+│   └── index.js         # Backend Server Bootstrapper & CORS config
 │
 └── FRONTEND/
     ├── public/
     ├── src/
-    │   ├── context/     # Auth Context
-    │   ├── pages/       # Dashboards (CR, Faculty, Home)
-    │   ├── utils/       # Axios API Config
-    │   ├── App.jsx      # Router definitions
-    │   └── index.css    # Tailwind CSS
+    │   ├── assets/      # Static assets and icons
+    │   ├── components/  # Reusable UI Blocks (Navbar.jsx, ProtectedRoute.jsx, etc)
+    │   ├── context/     # React Context for Global Auth State (AuthContext.jsx)
+    │   ├── pages/       # Major UI views
+    │   │   ├── CrDashboard.jsx
+    │   │   ├── CrLogin.jsx
+    │   │   ├── FacultyDashboard.jsx
+    │   │   ├── FacultyLogin.jsx
+    │   │   └── Home.jsx
+    │   ├── App.jsx      # React-Router DOM definition & Application Shell
+    │   ├── main.jsx     # Vite Mount Entry Node
+    │   └── index.css    # Tailwind CSS & custom styling rules
+    ├── .env             # Frontend Env Variables
+    ├── netlify.toml     # Netlify Redirects logic
+    ├── tailwind.config.js
     └── package.json
   </pre>
 
@@ -191,23 +210,29 @@ CR-ATTENDANCE/
 
   <!-- SECTION 7 -->
   <h2 style="color: #0f172a;">⚙️ 7. How to run locally</h2>
-  <p>Follow these steps to spin up the project locally:</p>
+  <p>Follow these steps to spin up the project locally for development or validation:</p>
   <pre style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: monospace;">
 <b># 1. Clone the repository</b>
 git clone &lt;repository_url&gt;
 cd CR-ATTENDANCE
 
-<b># 2. Setup Backend</b>
+<b># 2. Setup Database & Mailing</b>
+- Create a MongoDB Atlas cluster and acquire the MONGO_URI.
+- Ensure you have a Gmail account with "App Passwords" enabled to retrieve an EMAIL_PASS.
+
+<b># 3. Setup Backend</b>
 cd BACKEND
 npm install
-# Configure your .env here
+# Create the backend .env file utilizing the template below.
 npm run dev
+# The Backend server will start at http://localhost:5000
 
-<b># 3. Setup Frontend</b>
+<b># 4. Setup Frontend</b>
 cd ../FRONTEND
 npm install
-# Configure your .env here
+# Create the frontend .env file utilizing the template below.
 npm run dev
+# The Frontend will start up via Vite at http://localhost:5173
   </pre>
 
   <hr id="env-vars" style="border: 0; height: 1px; background-color: #e2e8f0; margin: 40px 0;">
@@ -216,23 +241,45 @@ npm run dev
   <h2 style="color: #0f172a;">🔑 8. Environment variables</h2>
   <p>Create a <code>.env</code> file in both directories.</p>
   
-  <p><b>Backend <code>.env</code></b>:</p>
+  <p><b>Backend <code>.env</code></b> (in <code>BACKEND/</code> directory):</p>
   <pre style="background-color: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px;">
 PORT=5000
-MONGO_URI=mongodb+srv://&lt;user&gt;:&lt;pass&gt;@cluster...
-JWT_SECRET=super_secret_key_123
+MONGO_URI=mongodb+srv://&lt;username&gt;:&lt;password&gt;@cluster0.abcde.mongodb.net/test
+JWT_SECRET=super_secret_key_make_this_long_and_secure
+
+# Automatic CR Accounts built dynamically
+CR1_NAME="John Doe"
+CR1_EMAIL=john@example.com
+CR1_PASSWORD=strongpassword1
+CR2_NAME="Jane Doe"
+CR2_EMAIL=jane@example.com
+CR2_PASSWORD=strongpassword2
+CR3_NAME="Alex Smith"
+CR3_EMAIL=alex@example.com
+CR3_PASSWORD=strongpassword3
+
+# Coordinator Account
+COORD_NAME="Prof. Riddhi Chauhan"
+COORD_EMAIL=riddhi.chauhan@hietgroup.org
+COORD_PASSWORD=Coordinator@123
+
+# Email Transport Secrets (Nodemailer)
 EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-FRONTEND_URL=http://localhost:5173
+EMAIL_PASS=your_gmail_app_password
+
+# Cross-Origin
+FRONTEND_URL=http://localhost:5173 
+# (Set to Netlify/Vercel URL in prod)
   </pre>
 
-  <p><b>Frontend <code>.env</code></b>:</p>
+  <p><b>Frontend <code>.env</code></b> (in <code>FRONTEND/</code> directory):</p>
   <pre style="background-color: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px;">
-VITE_BACKEND_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000
+# (Set to Vercel URL in prod)
   </pre>
   
   <p style="background-color: #fef2f2; color: #991b1b; padding: 12px; border-left: 4px solid #ef4444; border-radius: 4px;">
-    <b>IMPORTANT:</b> The frontend must use the backend URL exclusively from environment variables. Example in code: <code>const API = import.meta.env.VITE_BACKEND_URL</code>
+    <b>IMPORTANT:</b> The frontend must use the backend URL exclusively from environment variables. Example in Axios: <code>const API = axios.create({ baseURL: import.meta.env.VITE_API_URL })</code>
   </p>
 
   <hr id="api-routes" style="border: 0; height: 1px; background-color: #e2e8f0; margin: 40px 0;">
@@ -244,31 +291,73 @@ VITE_BACKEND_URL=http://localhost:5000
       <th style="padding: 10px; border: 1px solid #cbd5e1; text-align: left;">Method</th>
       <th style="padding: 10px; border: 1px solid #cbd5e1; text-align: left;">Route</th>
       <th style="padding: 10px; border: 1px solid #cbd5e1; text-align: left;">Description</th>
+      <th style="padding: 10px; border: 1px solid #cbd5e1; text-align: left;">Auth Protect</th>
     </tr>
+
+    <!-- Authentication -->
     <tr>
       <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #059669; font-weight: bold;">POST</code></td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/auth/login</td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">Authenticate User & Return Token</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Public</td>
     </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/auth/me</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Get currently authenticated user details</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected</td>
+    </tr>
+
+    <!-- Students -->
     <tr>
       <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #059669; font-weight: bold;">POST</code></td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/students/upload</td>
-      <td style="padding: 10px; border: 1px solid #e2e8f0;">Bulk upload students via Excel</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Bulk upload students via Excel (Memory Storage)</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR)</td>
     </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/students/</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">List all uploaded students inside the branch</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR/Coord)</td>
+    </tr>
+
+    <!-- Attendance -->
     <tr>
       <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #059669; font-weight: bold;">POST</code></td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/mark</td>
-      <td style="padding: 10px; border: 1px solid #e2e8f0;">Submit and email attendance</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Submit daily attendance and trigger automated emails</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR)</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Fetch specific date/subject attendance registries</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR/Coord)</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/summary</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Fetch aggregated subject lecture completion summary</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR/Coord)</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/pending</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Identify unaccounted/unmarked recent lectures</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR)</td>
     </tr>
     <tr>
       <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/frequent-absentees</td>
-      <td style="padding: 10px; border: 1px solid #e2e8f0;">Fetch Heatmap data (≥ 3 Days Absent)</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Fetch graphical Heatmap data (≥ 3 Days Absent)</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR/Coord)</td>
     </tr>
     <tr>
       <td style="padding: 10px; border: 1px solid #e2e8f0;"><code style="color: #2563eb; font-weight: bold;">GET</code></td>
       <td style="padding: 10px; border: 1px solid #e2e8f0;">/api/attendance/export</td>
-      <td style="padding: 10px; border: 1px solid #e2e8f0;">Export existing attendance to Excel</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Export complete attendance into clean Excel Sheets</td>
+      <td style="padding: 10px; border: 1px solid #e2e8f0;">Protected (CR/Coord)</td>
     </tr>
   </table>
 
