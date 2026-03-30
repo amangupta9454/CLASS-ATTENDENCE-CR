@@ -5,7 +5,7 @@
     <h1 style="color: #0f172a; margin-bottom: 8px; font-size: 2.5em; letter-spacing: -0.02em;">CR-ATTENDANCE SYSTEM</h1>
     <p style="font-size: 1.2em; color: #64748b; font-weight: 500;">CR-Attendance System is a full-stack MERN application designed to digitize and streamline classroom attendance management. It allows Class Representatives (CRs) to mark lecture-wise attendance, upload student data via Excel, and notify absent students automatically via email. Coordinators can monitor attendance, generate reports, and track student participation efficiently through a centralized dashboard. </p>
     <p style="margin-top: 20px;">
-      <a href="#" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">View Live Demo</a>
+      <a href="https://cr-attendence.netlify.app/" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">View Live Demo</a>
     </p>
     <p style="margin-top: 24px;">
       <img src="https://img.shields.io/badge/MERN-Stack-3b82f6?style=flat-square&logo=react" alt="MERN Stack" />
