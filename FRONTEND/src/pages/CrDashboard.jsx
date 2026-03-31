@@ -37,7 +37,16 @@ const TIMING_OPTIONS = [
   '3:30 PM - 4:30 PM'
 ];
 
-const today = () => new Date().toISOString().split('T')[0];
+const getISTDate = (offsetDays = 0) => {
+  const d = new Date();
+  const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  const istDate = new Date(utc + 19800000); // IST is UTC+5:30
+  istDate.setDate(istDate.getDate() + offsetDays);
+  return istDate.toISOString().split('T')[0];
+};
+
+const todayIST = () => getISTDate(0);
+const yesterdayIST = () => getISTDate(-1);
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -262,7 +271,7 @@ const UploadTab = () => {
 
 /* ───── Mark Attendance Tab ───── */
 const MarkAttendanceTab = ({ pendingLectures }) => {
-  const [date, setDate] = useState(today());
+  const [date, setDate] = useState(todayIST());
   const [lectureNum, setLectureNum] = useState(3);
   const [subject, setSubject] = useState('');
   const [timing, setTiming] = useState('');
@@ -376,7 +385,7 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
               <Calendar className="w-3 h-3 inline mr-1" />Date
             </label>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-              min={today()} max={today()}
+              min={yesterdayIST()} max={todayIST()}
               id="attendance-date"
               className="w-full px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm border-2 border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
           </motion.div>
@@ -629,7 +638,7 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
 
 /* ───── View & Export Tab ───── */
 const ViewExportTab = () => {
-  const [date, setDate] = useState(today());
+  const [date, setDate] = useState(todayIST());
   const [lectureNum, setLectureNum] = useState('');
   const [records, setRecords] = useState([]);
   const [summary, setSummary] = useState(null);

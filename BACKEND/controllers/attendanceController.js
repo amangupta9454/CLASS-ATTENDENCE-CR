@@ -19,10 +19,14 @@ const markAttendance = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Lecture number must be 3, 4, 5, or 6' });
     }
 
-    // --- Prevent past date customization ---
-    const todayIST = new Date().toLocaleString("en-CA", { timeZone: "Asia/Kolkata" }).split(",")[0];
-    if (date < todayIST) {
-      return res.status(400).json({ success: false, message: 'Cannot mark or modify attendance for past dates.' });
+    // --- Prevent past date customization beyond 1 day ---
+    const nowIST = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const yesterday = new Date(nowIST);
+    yesterday.setDate(nowIST.getDate() - 1);
+    const yesterdayIST = yesterday.toLocaleString("en-CA", { timeZone: "Asia/Kolkata" }).split(",")[0];
+
+    if (date < yesterdayIST) {
+      return res.status(400).json({ success: false, message: 'Cannot mark or modify attendance for dates older than 1 day.' });
     }
 
     // --- Fetch existing attendance to detect changes ---
@@ -214,7 +218,10 @@ const getLecturesSummary = async (req, res) => {
 const getPendingLectures = async (req, res) => {
   try {
     await connectDB();
-    const date = req.query.date || new Date().toISOString().split('T')[0];
+    const d = new Date();
+    const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    const todayIST = new Date(utc + 19800000).toISOString().split('T')[0];
+    const date = req.query.date || todayIST;
     const allLectures = [3, 4, 5, 6];
 
     const marked = await Attendance.distinct('lectureNumber', { date });

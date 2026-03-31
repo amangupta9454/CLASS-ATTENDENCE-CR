@@ -9,7 +9,15 @@ import api from '../utils/api';
 import toast from 'react-hot-toast';
 
 const LECTURES = [3, 4, 5, 6];
-const today = () => new Date().toISOString().split('T')[0];
+const getISTDate = (offsetDays = 0) => {
+  const d = new Date();
+  const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  const istDate = new Date(utc + 19800000); // IST is UTC+5:30
+  istDate.setDate(istDate.getDate() + offsetDays);
+  return istDate.toISOString().split('T')[0];
+};
+
+const todayIST = () => getISTDate(0);
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <motion.div
@@ -29,7 +37,7 @@ const StatCard = ({ icon: Icon, label, value, color }) => (
 
 const FacultyDashboard = () => {
   const { user } = useAuth();
-  const [date, setDate] = useState(today());
+  const [date, setDate] = useState(todayIST());
   const [lectureNum, setLectureNum] = useState('');
   const [records, setRecords] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -42,7 +50,7 @@ const FacultyDashboard = () => {
 
   // Load lecture summary & frequent absentees on mount
   useEffect(() => {
-    api.get(`/api/attendance/summary?date=${today()}`)
+    api.get(`/api/attendance/summary?date=${todayIST()}`)
       .then(({ data }) => setLectureSummary(data.summary || []))
       .catch(() => {});
 
