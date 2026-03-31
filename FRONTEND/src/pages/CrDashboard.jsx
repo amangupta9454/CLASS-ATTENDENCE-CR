@@ -286,14 +286,43 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
     fetchStudents();
   }, []);
 
+  useEffect(() => {
+    if (students.length > 0) {
+      fetchExistingAttendance();
+    }
+  }, [date, lectureNum, students]);
+
+  const fetchExistingAttendance = async () => {
+    try {
+      const { data } = await api.get(`/api/attendance?date=${date}&lectureNumber=${lectureNum}`);
+      if (data.records && data.records.length > 0) {
+        const existingAtt = {};
+        data.records.forEach((r) => {
+          if (r.studentId && r.studentId._id) {
+            existingAtt[r.studentId._id] = r.status;
+          }
+        });
+        setAttendance(existingAtt);
+        setSubject(data.records[0].subjectName || '');
+        setTiming(data.records[0].timing || '');
+      } else {
+        const init = {};
+        students.forEach((s) => { init[s._id] = 'Present'; });
+        setAttendance(init);
+        setSubject('');
+        setTiming('');
+      }
+    } catch (err) {
+      console.error("Failed to fetch existing attendance", err);
+    }
+  };
+
   const fetchStudents = async () => {
     setLoadingStudents(true);
     try {
       const { data } = await api.get('/api/students');
       setStudents(data.students || []);
-      const init = {};
-      (data.students || []).forEach((s) => { init[s._id] = 'Present'; });
-      setAttendance(init);
+      // The secondary useEffect will handle setting the initial 'Present' state or fetching existing attendance
     } catch {
       toast.error('Failed to load students');
     } finally {
