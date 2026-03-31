@@ -62,38 +62,52 @@ const markAttendance = async (req, res) => {
 
     await Attendance.bulkWrite(ops);
 
-    // Send emails to newly absent students (fire and forget)
+    // Send emails to newly absent students (await to ensure Vercel doesn't kill the function)
+    const emailErrors = [];
+
     if (newAbsents.length > 0) {
-      Student.find({ _id: { $in: newAbsents } })
-        .then((students) => {
-          students.forEach((student) => {
-            sendAbsenceEmail({
-              studentName: student.name,
-              studentEmail: student.email,
-              date,
-              lectureNumber: Number(lectureNumber),
-              subjectName,
-            }).catch((emailErr) => console.error('Email error for', student.email, emailErr.message));
-          });
-        })
-        .catch((err) => console.error('Fetch absent students error:', err.message));
+      try {
+        const students = await Student.find({ _id: { $in: newAbsents } });
+        const emailPromises = students.map((student) =>
+          sendAbsenceEmail({
+            studentName: student.name,
+            studentEmail: student.email,
+            date,
+            lectureNumber: Number(lectureNumber),
+            subjectName,
+          }).catch((emailErr) => {
+            console.error('Email error for absent student', student.email, ':', emailErr.message);
+            emailErrors.push({ email: student.email, error: emailErr.message });
+          })
+        );
+        await Promise.all(emailPromises);
+      } catch (err) {
+        console.error('Fetch absent students error:', err.message);
+        emailErrors.push({ type: 'fetch_absents', error: err.message });
+      }
     }
 
-    // Send emails to newly present (corrected) students (fire and forget)
+    // Send emails to newly present (corrected) students 
     if (newlyPresent.length > 0) {
-      Student.find({ _id: { $in: newlyPresent } })
-        .then((students) => {
-          students.forEach((student) => {
-            sendPresentCorrectionEmail({
-              studentName: student.name,
-              studentEmail: student.email,
-              date,
-              lectureNumber: Number(lectureNumber),
-              subjectName,
-            }).catch((emailErr) => console.error('Email error for', student.email, emailErr.message));
-          });
-        })
-        .catch((err) => console.error('Fetch corrected students error:', err.message));
+      try {
+        const students = await Student.find({ _id: { $in: newlyPresent } });
+        const emailPromises = students.map((student) =>
+          sendPresentCorrectionEmail({
+            studentName: student.name,
+            studentEmail: student.email,
+            date,
+            lectureNumber: Number(lectureNumber),
+            subjectName,
+          }).catch((emailErr) => {
+            console.error('Email error for corrected student', student.email, ':', emailErr.message);
+            emailErrors.push({ email: student.email, error: emailErr.message });
+          })
+        );
+        await Promise.all(emailPromises);
+      } catch (err) {
+        console.error('Fetch corrected students error:', err.message);
+        emailErrors.push({ type: 'fetch_corrected', error: err.message });
+      }
     }
 
     return res.status(200).json({
@@ -102,6 +116,7 @@ const markAttendance = async (req, res) => {
       totalMarked: records.length,
       absentCount: newAbsents.length,
       correctedCount: newlyPresent.length,
+      emailErrors: emailErrors.length > 0 ? emailErrors : undefined,
     });
   } catch (err) {
     console.error('Mark attendance error:', err);
