@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   ClipboardCheck, 
@@ -13,7 +14,9 @@ import {
   Users,
   TrendingUp,
   Zap,
-  FileSpreadsheet
+  FileSpreadsheet,
+  X,
+  Smartphone
 } from 'lucide-react';
 
 const fadeUp = {
@@ -109,8 +112,62 @@ const workflow = [
   },
 ];
 
-const Home = () => (
-  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
+const Home = () => {
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 relative">
+    <AnimatePresence>
+      {showPopup && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50 w-80 sm:w-96 p-1 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-2xl"
+        >
+          <div className="bg-white rounded-xl p-5 sm:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-full -mr-16 -mt-16 pointer-events-none" />
+            
+            <button 
+              onClick={() => setShowPopup(false)}
+              className="absolute top-3 right-3 p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors z-10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center text-center gap-3 mb-5 relative z-10">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <Smartphone className="w-7 h-7 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-slate-900 text-xl tracking-tight mb-1">Get the Mobile App</h3>
+                <p className="text-sm text-slate-600 leading-relaxed max-w-[240px] mx-auto">
+                  Mark attendance faster on your phone. Download our official Android app for CRs.
+                </p>
+              </div>
+            </div>
+
+            <a 
+              href="/app-debug.apk" 
+              download="CR-Attendance.apk"
+              className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98] relative z-10"
+              onClick={() => setShowPopup(false)}
+            >
+              <Download className="w-5 h-5" />
+              Download APK
+            </a>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
     {/* Hero */}
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white">
       {/* Animated background patterns */}
@@ -429,6 +486,7 @@ const Home = () => (
       </div>
     </footer>
   </div>
-);
+  );
+};
 
 export default Home;

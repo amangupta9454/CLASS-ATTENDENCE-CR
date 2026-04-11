@@ -61,11 +61,10 @@ const TabBtn = ({ active, onClick, icon: Icon, label }) => (
     whileTap={{ scale: 0.98 }}
     className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-xs sm:text-sm font-bold rounded-2xl transition-all whitespace-nowrap relative overflow-hidden group`}
   >
-    <div className={`absolute inset-0 rounded-2xl transition-all duration-300 ${
-      active
+    <div className={`absolute inset-0 rounded-2xl transition-all duration-300 ${active
         ? 'bg-gradient-to-r from-blue-600 to-cyan-600 shadow-lg shadow-blue-500/30'
         : 'bg-slate-100 group-hover:bg-slate-200'
-    }`} />
+      }`} />
     <span className={`relative flex items-center gap-2 ${active ? 'text-white' : 'text-slate-700'}`}>
       <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
       <span className="hidden sm:inline">{label}</span>
@@ -175,11 +174,10 @@ const UploadTab = () => {
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
-          className={`border-3 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 ${
-            dragging 
-              ? 'border-blue-500 bg-blue-50 scale-105' 
+          className={`border-3 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 ${dragging
+              ? 'border-blue-500 bg-blue-50 scale-105'
               : 'border-slate-300 hover:border-blue-400 hover:bg-blue-50/50'
-          }`}
+            }`}
         >
           <motion.div
             animate={{ y: dragging ? -4 : 0 }}
@@ -358,11 +356,11 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
       } else {
         toast.success(data.message);
       }
-      
+
       if (data.absentCount > 0) {
         toast(`📧 Absence emails sent to ${data.absentCount} student(s)`, { icon: '✉️' });
       }
-      
+
       if (data.correctedCount > 0) {
         toast(`✅ Correction emails sent to ${data.correctedCount} student(s)`, { icon: '✅' });
       }
@@ -375,8 +373,8 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
 
   const presentCount = Object.values(attendance).filter((v) => v === 'Present').length;
   const absentCount = Object.values(attendance).filter((v) => v === 'Absent').length;
-  const filteredStudents = students.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filteredStudents = students.filter(s =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.rollNumber.toString().includes(searchTerm)
   );
 
@@ -407,7 +405,7 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
           </motion.div>
           <h2 className="font-bold text-base sm:text-lg text-slate-800">Lecture Details</h2>
         </div>
-        
+
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <motion.div variants={fadeUp} initial="hidden" animate="visible">
             <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">
@@ -560,11 +558,10 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
                               whileHover={{ scale: 1.08 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => setAttendance((p) => ({ ...p, [s._id]: 'Present' }))}
-                              className={`px-4 py-2 text-xs font-bold rounded-lg border-2 transition-all flex items-center gap-1.5 ${
-                                status === 'Present'
+                              className={`px-4 py-2 text-xs font-bold rounded-lg border-2 transition-all flex items-center gap-1.5 ${status === 'Present'
                                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 border-emerald-600 text-white shadow-lg shadow-emerald-500/30'
                                   : 'border-slate-300 text-slate-600 hover:border-emerald-400 hover:text-emerald-600'
-                              }`}
+                                }`}
                             >
                               <Check className="w-4 h-4" />
                               <span className="hidden sm:inline">P</span>
@@ -573,11 +570,10 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
                               whileHover={{ scale: 1.08 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => setAttendance((p) => ({ ...p, [s._id]: 'Absent' }))}
-                              className={`px-4 py-2 text-xs font-bold rounded-lg border-2 transition-all flex items-center gap-1.5 ${
-                                status === 'Absent'
+                              className={`px-4 py-2 text-xs font-bold rounded-lg border-2 transition-all flex items-center gap-1.5 ${status === 'Absent'
                                   ? 'bg-gradient-to-r from-red-500 to-rose-500 border-red-600 text-white shadow-lg shadow-red-500/30'
                                   : 'border-slate-300 text-slate-600 hover:border-red-400 hover:text-red-600'
-                              }`}
+                                }`}
                             >
                               <X className="w-4 h-4" />
                               <span className="hidden sm:inline">A</span>
@@ -616,11 +612,10 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
                           whileHover={{ scale: 1.08 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setAttendance((p) => ({ ...p, [s._id]: 'Present' }))}
-                          className={`w-10 h-10 rounded-lg border-2 font-bold transition-all flex items-center justify-center text-sm ${
-                            status === 'Present'
+                          className={`w-10 h-10 rounded-lg border-2 font-bold transition-all flex items-center justify-center text-sm ${status === 'Present'
                               ? 'bg-gradient-to-r from-emerald-500 to-teal-500 border-emerald-600 text-white shadow-lg shadow-emerald-500/30'
                               : 'border-slate-300 text-slate-600 hover:border-emerald-400'
-                          }`}
+                            }`}
                         >
                           <Check className="w-5 h-5" />
                         </motion.button>
@@ -628,11 +623,10 @@ const MarkAttendanceTab = ({ pendingLectures }) => {
                           whileHover={{ scale: 1.08 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setAttendance((p) => ({ ...p, [s._id]: 'Absent' }))}
-                          className={`w-10 h-10 rounded-lg border-2 font-bold transition-all flex items-center justify-center text-sm ${
-                            status === 'Absent'
+                          className={`w-10 h-10 rounded-lg border-2 font-bold transition-all flex items-center justify-center text-sm ${status === 'Absent'
                               ? 'bg-gradient-to-r from-red-500 to-rose-500 border-red-600 text-white shadow-lg shadow-red-500/30'
                               : 'border-slate-300 text-slate-600 hover:border-red-400'
-                          }`}
+                            }`}
                         >
                           <X className="w-5 h-5" />
                         </motion.button>
@@ -862,11 +856,10 @@ const ViewExportTab = () => {
                     <td className="px-4 sm:px-5 py-3 sm:py-4">
                       <motion.span
                         whileHover={{ scale: 1.05 }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
-                          r.status === 'Present'
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${r.status === 'Present'
                             ? 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 border border-emerald-200'
                             : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border border-red-200'
-                        }`}
+                          }`}
                       >
                         {r.status === 'Present' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
                         {r.status}
@@ -900,11 +893,10 @@ const ViewExportTab = () => {
                     </div>
                     <motion.span
                       whileHover={{ scale: 1.05 }}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold shrink-0 ${
-                        r.status === 'Present'
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold shrink-0 ${r.status === 'Present'
                           ? 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 border border-emerald-200'
                           : 'bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border border-red-200'
-                      }`}
+                        }`}
                     >
                       {r.status === 'Present' ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
                       {r.status}
@@ -936,7 +928,7 @@ const CrDashboard = () => {
   useEffect(() => {
     api.get('/api/attendance/pending')
       .then(({ data }) => setPendingLectures(data.pending || []))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
